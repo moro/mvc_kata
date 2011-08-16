@@ -40,3 +40,5 @@ PLATFORMS
 
 DEPENDENCIES
   aruba
+  cucumber
+  rspec
