@@ -1,6 +1,7 @@
 # coding: utf-8
 require 'forwardable'
 
+module MvcKata
 module View
   BLANKLINE_RE = /\A\s+\Z/
   def unindent(string)
@@ -158,4 +159,5 @@ module View
       VIEW
     end
   end
+end
 end

@@ -1,4 +1,5 @@
 # coding: utf-8
+module MvcKata
 class Living
   attr :hp, false
   attr :max_hp, true
@@ -82,5 +83,6 @@ class Player < Living
     self.hp = self.max_hp
     self.attack_power = 3
   end
+end
 end
 

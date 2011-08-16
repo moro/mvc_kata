@@ -3,6 +3,7 @@ require 'dice'
 require 'mvc_kata/models'
 require 'mvc_kata/views'
 
+module MvcKata
 class Battle
   attr_reader :player, :enemy, :turn_count
   def initialize(view_class)
@@ -54,5 +55,6 @@ class Battle
   def wait
     @view.wait
   end
+end
 end
 

@@ -2,6 +2,7 @@
 require 'spec_helper'
 require 'mvc_kata'
 
+module MvcKata
 describe Player do
   freeze_dice(2)
   let(:player) { Player.new }
@@ -23,4 +24,5 @@ describe Player do
       end
     end
   end
+end
 end

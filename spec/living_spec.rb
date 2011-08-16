@@ -2,6 +2,7 @@
 require 'spec_helper'
 require 'mvc_kata'
 
+module MvcKata
 describe Living do
   freeze_dice(3)
 
@@ -35,5 +36,6 @@ describe Living do
     end
     it { should_not be_living }
   end
+end
 end
 
