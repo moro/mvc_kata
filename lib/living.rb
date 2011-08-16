@@ -70,6 +70,7 @@ class Player < Living
   def cure(power)
     Dice[power].tap do |cure_point|
       self.hp = [self.hp + cure_point, self.max_hp].min
+      notify(:player_hoimi, cure_point)
     end
   end
 

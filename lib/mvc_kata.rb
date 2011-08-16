@@ -12,21 +12,23 @@ class Battle
     @turn_count = 0
   end
 
+  def command
+    @turn_count += 1
+    @view_context.query_command
+
+    $stdin.gets.strip
+  end
+
   def mainloop
     while (@player.living? && @enemy.living?) do
-      @turn_count += 1
-
-      @view_context.query_command
-
-      case command = wait
-      when "ホイミ", "2"
-        @view_context.player_hoimi(player.cure(8))
-      else
-        @player.attack(@enemy)
+      case command
+      when "ホイミ", "2" then @player.cure(8)
+      else @player.attack(@enemy)
       end
+
       wait
 
-      if enemy.living?
+      if @enemy.living?
         @enemy.attack(@player)
         wait
       end
