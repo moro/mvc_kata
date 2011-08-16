@@ -1,16 +1,16 @@
 # coding: utf-8
 require 'forwardable'
 
-module ViewContext
+module View
   BLANKLINE_RE = /\A\s+\Z/
   def unindent(string)
     trim = string.lines.reject {|l| l =~ BLANKLINE_RE }.map {|l| l[/^ +/].size }.min
     string.lines.map {|l| l =~ BLANKLINE_RE ? l : l[trim, l.length] }.join
   end
 
-  class Ja
+  class Base
     extend Forwardable
-    include ViewContext
+    include View
 
     def_delegators '@battle', :player, :enemy
 
@@ -23,6 +23,13 @@ module ViewContext
       send(method, *values)
     end
 
+    def render(output)
+      puts unindent(output)
+    end
+  end
+
+
+  class Ja < Base
     def query_command
       puts unindent(<<-VIEW)
         ===========================
@@ -74,6 +81,63 @@ module ViewContext
 
         ===========================
         ゲームオーバー
+      VIEW
+    end
+  end
+
+  class En < Base
+    def query_command
+      render(<<-VIEW)
+
+        ===========================
+        #{player.name} HP: #{player.hp}
+         1 Attack
+         2 Hoimi
+        Command? [1]
+      VIEW
+    end
+
+    def encounter
+      render(<<-VIEW)
+        ===========================
+        #{player.name} encountered a #{enemy.name}.
+      VIEW
+    end
+
+    def attacked(attacker, victim, damage)
+      render(<<-VIEW)
+
+        ===========================
+        #{attacker.name} attack.
+        #{victim.name} damaged #{damage} point(s).
+      VIEW
+    end
+
+    def player_hoimi(cure_point)
+      render(<<-VIEW)
+
+        ===========================
+        #{player.name} call hoimi.
+        #{player.name} cured #{cure_point} point(s)
+      VIEW
+    end
+
+    def finish_battle
+      render(<<-VIEW)
+        #{player.name} win!
+
+        ===========================
+        Turn count: #{@battle.turn_count}
+        #{player.name} get #{enemy.exp} EXP
+      VIEW
+    end
+
+    def game_over
+      render(<<-VIEW)
+        #{player.name} lose...
+
+        ===========================
+        GAME OVER"
       VIEW
     end
   end
