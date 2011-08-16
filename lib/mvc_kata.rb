@@ -6,6 +6,11 @@ class Living
   attr :max_hp, true
   attr :name, true
   attr :attack_power, true
+
+  def attack(other)
+    damage_point = Dice[attack_power]
+    other.hp -= damage_point
+  end
 end
 
 class Enemy < Living
@@ -46,6 +51,7 @@ class Battle
     @enemy_classes = [Slime, Dragon]
     @player = Player.new
     @turn_count = 0
+    @view_context = ViewContext::Ja.new
   end
 
   def finish_battle
@@ -87,31 +93,43 @@ class Battle
     end
   end
 
-  def enemy_attack
-    damage_point = Dice[@enemy.attack_power]
+  module ViewContext
+    def unindent(string)
+      trim = string.lines.map {|l| l[/^ +/].size }.min
+      string.lines.map {|l| l[trim, l.length] }.join
+    end
 
-    puts
-    puts "==========================="
-    puts "#{@enemy.name}のこうげき"
-    @player.hp -= damage_point
-    puts "#{@player.name}に#{damage_point}のダメージ"
+    class Ja
+      include ViewContext
+
+      def attacked(attacker, victim, damage)
+        puts unindent(<<-VIEW)
+          ===========================
+          #{attacker.name}のこうげき
+          #{victim.name}に#{damage}のダメージ
+        VIEW
+      end
+    end
+  end
+
+  def __attack__(attacker, victim)
+    old = victim.hp
+    attacker.attack(victim)
+    dp = old - victim.hp
+    @view_context.attacked(attacker, victim, dp)
+  end
+
+  def enemy_attack
+    __attack__(@enemy, @player)
 
     gets
-
     check_player_hp()
   end
 
   def player_attack
-    damage_point = Dice[@player.attack_power]
-
-    puts
-    puts "==========================="
-    puts "#{@player.name}のこうげき"
-    @enemy.hp -= damage_point
-    puts "#{@enemy.name}に#{damage_point}のダメージ"
+    __attack__(@player, @enemy)
 
     gets
-
     check_enemy_hp()
   end
 
