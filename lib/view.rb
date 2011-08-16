@@ -26,12 +26,25 @@ module View
     def render(output)
       puts unindent(output)
     end
+
+    def wait
+      $stdin.gets
+    end
+
+    def get_command
+      v = $stdin.gets.strip
+      v == '2' ? :hoimi : v
+    end
   end
 
 
   class Ja < Base
+    def get_command
+      (v = super) == 'ホイミ' ? :hoimi : v
+    end
+
     def query_command
-      puts unindent(<<-VIEW)
+      render(<<-VIEW)
         ===========================
         #{player.name}のHP: #{player.hp}
          1 たたかう"
@@ -41,7 +54,7 @@ module View
     end
 
     def encounter
-      puts unindent(<<-VIEW)
+      render(<<-VIEW)
         ===========================
         #{enemy.name}があらわれた
 
@@ -49,7 +62,7 @@ module View
     end
 
     def attacked(attacker, victim, damage)
-      puts unindent(<<-VIEW)
+      render(<<-VIEW)
         ===========================
         #{attacker.name}のこうげき
         #{victim.name}に#{damage}のダメージ
@@ -57,7 +70,7 @@ module View
     end
 
     def player_hoimi(cure_point)
-      puts unindent(<<-VIEW)
+      render(<<-VIEW)
 
         ===========================
         #{player.name}はホイミをとなえた
@@ -66,7 +79,7 @@ module View
     end
 
     def finish_battle
-      puts unindent(<<-VIEW)
+      render(<<-VIEW)
         #{enemy.name}をたおした
 
         ===========================
@@ -76,7 +89,7 @@ module View
     end
 
     def game_over
-      puts unindent(<<-VIEW)
+      render(<<-VIEW)
         #{player.name}はたおれました
 
         ===========================
@@ -86,6 +99,10 @@ module View
   end
 
   class En < Base
+    def get_command
+      (v = super) == 'Hoimi' ? :hoimi : v
+    end
+
     def query_command
       render(<<-VIEW)
 

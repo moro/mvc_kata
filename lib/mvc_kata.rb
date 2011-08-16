@@ -15,14 +15,13 @@ class Battle
   def command
     @turn_count += 1
     @view_context.query_command
-
-    $stdin.gets.strip
+    @view_context.get_command
   end
 
   def mainloop
     while (@player.living? && @enemy.living?) do
       case command
-      when "ホイミ", "Hoimi", "2" then @player.cure(8)
+      when :hoimi then @player.cure(8)
       else @player.attack(@enemy)
       end
 
@@ -53,7 +52,7 @@ class Battle
   private
 
   def wait
-    $stdin.gets.strip
+    @view_context.wait
   end
 end
 
