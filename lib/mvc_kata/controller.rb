@@ -4,6 +4,17 @@ require 'mvc_kata/models'
 require 'mvc_kata/views'
 
 module MvcKata
+class Runner
+  def initialize(args)
+    view = (args.shift == "english") ? View::En : View::Ja
+    @battle = Battle.new(view)
+  end
+
+  def run
+    @battle.start
+  end
+end
+
 class Battle
   attr_reader :player, :enemy, :turn_count
   def initialize(view_class)

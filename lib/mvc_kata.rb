@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-require 'dice'
-require 'mvc_kata/battle'
 
 module MvcKata
-
+  autoload 'Runner', 'mvc_kata/controller'
 end

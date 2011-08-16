@@ -3,6 +3,5 @@ $: << File.expand_path('../lib', File.dirname(__FILE__))
 
 require 'mvc_kata'
 
-view = (ARGV.shift == "english") ? MvcKata::View::En : MvcKata::View::Ja
-MvcKata::Battle.new(view).start
+MvcKata::Runner.new(ARGV).run
 
