@@ -9,8 +9,10 @@ class Living
   attr :attack_power, true
 
   def attack(other)
+    old_hp = other.hp
     damage_point = Dice[attack_power]
     other.hp -= damage_point
+    return old_hp - other.hp
   end
 end
 
@@ -167,9 +169,7 @@ class Battle
   end
 
   def __attack__(attacker, victim)
-    old = victim.hp
-    dp = old - attacker.attack(victim)
-    @view_context.attacked(attacker, victim, dp)
+    @view_context.attacked(attacker, victim, attacker.attack(victim))
   end
 
   def enemy_attack

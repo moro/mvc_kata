@@ -3,7 +3,7 @@ require 'spec_helper'
 require 'mvc_kata'
 
 describe Living do
-  freeze_dice(1)
+  freeze_dice(3)
 
   let(:player) { Player.new }
   let(:slime) { Slime.new }
@@ -11,9 +11,10 @@ describe Living do
   describe '#attack(other)' do
     subject { slime }
     before do
-      player.attack(slime)
+      @damage = player.attack(slime)
     end
-    its(:hp) { should == slime.max_hp - 1 }
+    its(:hp) { should == slime.max_hp - 3 }
+    specify { @damage.should == 3 }
   end
 end
 
