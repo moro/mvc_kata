@@ -3,7 +3,7 @@ require 'dice'
 require 'forwardable'
 
 class Living
-  attr :hp, true
+  attr :hp, false
   attr :max_hp, true
   attr :name, true
   attr :attack_power, true
@@ -13,6 +13,14 @@ class Living
     damage_point = Dice[attack_power]
     other.hp -= damage_point
     return old_hp - other.hp
+  end
+
+  def hp=(val)
+    @hp = [val, 0].max
+  end
+
+  def living?
+    hp > 0
   end
 end
 
@@ -109,12 +117,12 @@ module ViewContext
     end
 
 
-    def finish_battle(turn)
+    def finish_battle
       puts unindent(<<-VIEW)
         #{enemy.name}をたおした
 
         ===========================
-        かかったターン数#{turn_count}
+        かかったターン数#{@battle.turn_count}
         経験値#{enemy.exp}かくとく"
       VIEW
     end
@@ -132,7 +140,7 @@ end
 
 
 class Battle
-  attr_reader :player, :enemy
+  attr_reader :player, :enemy, :turn_count
   def initialize
     @view_context = ViewContext::Ja.new(self)
     @enemy_classes = [Slime, Dragon]
@@ -146,11 +154,10 @@ class Battle
   end
 
   def check_enemy_hp
-    if @enemy.hp <= 0
-      @enemy.hp = 0
-      finish_battle()
-    else
+    if @enemy.living?
       enemy_attack()
+    else
+      finish_battle()
     end
   end
 
@@ -160,11 +167,10 @@ class Battle
   end
 
   def check_player_hp
-    if @player.hp <= 0
-      @player.hp = 0
-      game_over()
-    else
+    if @player.living?
       query_command()
+    else
+      game_over()
     end
   end
 

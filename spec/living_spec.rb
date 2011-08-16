@@ -16,5 +16,13 @@ describe Living do
     its(:hp) { should == slime.max_hp - 3 }
     specify { @damage.should == 3 }
   end
+
+  describe '#living?' do
+    subject { slime }
+    before do
+      slime.hp = 0
+    end
+    it { should_not be_living }
+  end
 end
 
