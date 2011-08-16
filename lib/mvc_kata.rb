@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 require 'dice'
+require 'forwardable'
 
 class Living
   attr :hp, true
@@ -46,22 +47,83 @@ class Player < Living
   end
 end
 
+module ViewContext
+  BLANKLINE_RE = /\A\s+\Z/
+  def unindent(string)
+    trim = string.lines.reject {|l| l =~ BLANKLINE_RE }.map {|l| l[/^ +/].size }.min
+    string.lines.map {|l| l =~ BLANKLINE_RE ? l : l[trim, l.length] }.join
+  end
+
+  class Ja
+    extend Forwardable
+    include ViewContext
+
+    def_delegators '@battle', :player, :enemy
+
+    def initialize(battle)
+      @battle = battle
+    end
+
+    def query_command
+      puts unindent(<<-VIEW)
+        ===========================
+        #{player.name}のHP: #{player.hp}
+         1 たたかう"
+         2 ホイミ"
+        コマンド? [1]
+      VIEW
+    end
+
+    def encounter
+      puts unindent(<<-VIEW)
+        ===========================
+        #{enemy.name}があらわれた
+
+      VIEW
+    end
+
+
+    def attacked(attacker, victim, damage)
+      puts unindent(<<-VIEW)
+        ===========================
+        #{attacker.name}のこうげき
+        #{victim.name}に#{damage}のダメージ
+      VIEW
+    end
+
+    def finish_battle(turn)
+      puts unindent(<<-VIEW)
+        #{enemy.name}をたおした
+
+        ===========================
+        かかったターン数#{turn_count}
+        経験値#{enemy.exp}かくとく"
+      VIEW
+    end
+
+    def game_over
+      puts unindent(<<-VIEW)
+        #{player.name}はたおれました
+
+        ===========================
+        ゲームオーバー
+      VIEW
+    end
+  end
+end
+
+
 class Battle
+  attr_reader :player, :enemy
   def initialize
+    @view_context = ViewContext::Ja.new(self)
     @enemy_classes = [Slime, Dragon]
     @player = Player.new
     @turn_count = 0
-    @view_context = ViewContext::Ja.new
   end
 
   def finish_battle
-    puts "#{@enemy.name}をたおした"
-
-    puts
-    puts "==========================="
-    puts "かかったターン数#{@turn_count}"
-    puts "経験値#{@enemy.exp}かくとく"
-
+    @view_context.finish_battle(@turn_count)
     gets
   end
 
@@ -75,12 +137,7 @@ class Battle
   end
 
   def game_over
-    puts "#{@player.name}はたおれました"
-
-    puts
-    puts "==========================="
-    puts "ゲームオーバー"
-
+    @view_context.game_over
     gets
   end
 
@@ -93,29 +150,9 @@ class Battle
     end
   end
 
-  module ViewContext
-    def unindent(string)
-      trim = string.lines.map {|l| l[/^ +/].size }.min
-      string.lines.map {|l| l[trim, l.length] }.join
-    end
-
-    class Ja
-      include ViewContext
-
-      def attacked(attacker, victim, damage)
-        puts unindent(<<-VIEW)
-          ===========================
-          #{attacker.name}のこうげき
-          #{victim.name}に#{damage}のダメージ
-        VIEW
-      end
-    end
-  end
-
   def __attack__(attacker, victim)
     old = victim.hp
-    attacker.attack(victim)
-    dp = old - victim.hp
+    dp = old - attacker.attack(victim)
     @view_context.attacked(attacker, victim, dp)
   end
 
@@ -150,16 +187,9 @@ class Battle
   def query_command
     @turn_count += 1
 
-    puts
-    puts "==========================="
-    puts "#{@player.name}のHP: #{@player.hp}"
-    puts " 1 たたかう"
-    puts " 2 ホイミ"
-    puts "コマンド? [1]"
+    @view_context.query_command
 
-    command = gets.chomp
-
-    case command
+    case command = gets.chomp
     when "ホイミ", "2"
       player_hoimi()
     else
@@ -169,12 +199,9 @@ class Battle
 
   def encounter
     @enemy = Dice.shuffle(@enemy_classes).new
-
-    puts "==========================="
-    puts "#{@enemy.name}があらわれた"
+    @view_context.encounter
 
     gets
-
     query_command()
   end
 
