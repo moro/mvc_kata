@@ -288,9 +288,3 @@ class BattleEnglish
   end
 end
 
-
-if ARGV.shift == "english"
-  BattleEnglish.new.start
-else
-  Battle.new.start
-end
