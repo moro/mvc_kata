@@ -17,6 +17,17 @@ describe Living do
     specify { @damage.should == 3 }
   end
 
+  describe '#attack(other) w/observer' do
+    let(:observer) { observer = double('observer') }
+    let(:player) { Player.new([observer]) }
+
+    before do
+      observer.should_receive(:update).with(:attacked, player, slime, 3) { true }
+    end
+
+    specify { player.attack(slime) }
+  end
+
   describe '#living?' do
     subject { slime }
     before do
