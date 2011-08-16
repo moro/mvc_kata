@@ -45,6 +45,12 @@ class Player < Living
     self.hp = self.max_hp
     self.attack_power = 3
   end
+
+  def cure(power)
+    Dice[power].tap do |cure_point|
+      self.hp = [self.hp + cure_point, self.max_hp].min
+    end
+  end
 end
 
 module ViewContext
@@ -90,6 +96,16 @@ module ViewContext
         #{victim.name}に#{damage}のダメージ
       VIEW
     end
+
+    def player_hoimi(cure_point)
+      puts unindent(<<-VIEW)
+
+        ===========================
+        #{player.name}はホイミをとなえた
+        HPが#{cure_point}回復した
+      VIEW
+    end
+
 
     def finish_battle(turn)
       puts unindent(<<-VIEW)
@@ -171,16 +187,9 @@ class Battle
   end
 
   def player_hoimi
-    cure_point = Dice[8]
-
-    puts
-    puts "==========================="
-    puts "#{@player.name}はホイミをとなえた"
-    @player.hp = [@player.hp + cure_point, @player.max_hp].min
-    puts "HPが#{cure_point}回復した"
+    @view_context.player_hoimi(player.cure(8))
 
     gets
-
     enemy_attack()
   end
 
