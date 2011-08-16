@@ -154,11 +154,7 @@ class Battle
   end
 
   def check_enemy_hp
-    if @enemy.living?
-      enemy_attack()
-    else
-      finish_battle()
-    end
+    @enemy.living? ?  enemy_attack : finish_battle
   end
 
   def game_over
@@ -167,11 +163,7 @@ class Battle
   end
 
   def check_player_hp
-    if @player.living?
-      query_command()
-    else
-      game_over()
-    end
+    @player.living? ? query_command : game_over
   end
 
   def __attack__(attacker, victim)
