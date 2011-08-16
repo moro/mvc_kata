@@ -6,16 +6,16 @@ require 'view'
 class Battle
   attr_reader :player, :enemy, :turn_count
   def initialize(view_class)
-    @view_context = view_class.new(self)
+    @view = view_class.new(self)
     @enemy_classes = [Slime, Dragon]
-    @player = Player.new([@view_context])
+    @player = Player.new([@view])
     @turn_count = 0
   end
 
   def command
     @turn_count += 1
-    @view_context.query_command
-    @view_context.get_command
+    @view.query_command
+    @view.get_command
   end
 
   def mainloop
@@ -35,13 +35,13 @@ class Battle
   end
 
   def encounter
-    @enemy = Dice.shuffle(@enemy_classes).new([@view_context])
-    @view_context.encounter
+    @enemy = Dice.shuffle(@enemy_classes).new([@view])
+    @view.encounter
 
     wait
     mainloop
 
-    @player.living? ?  @view_context.finish_battle : @view_context.game_over
+    @player.living? ?  @view.finish_battle : @view.game_over
     wait
   end
 
@@ -52,7 +52,7 @@ class Battle
   private
 
   def wait
-    @view_context.wait
+    @view.wait
   end
 end
 
