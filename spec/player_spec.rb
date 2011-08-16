@@ -1,6 +1,6 @@
 # coding: utf-8
 require 'spec_helper'
-require 'mvc_kata'
+require 'mvc_kata/models'
 
 module MvcKata
 describe Player do

@@ -1,4 +1,5 @@
 $: << File.expand_path('../lib', File.dirname(__FILE__))
+require 'dice'
 
 module FrozenDice
   def freeze_dice(val)
