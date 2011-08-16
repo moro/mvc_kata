@@ -4,7 +4,7 @@ module Dice
     rand(num) + 1
   end
 
-  def shuffle(arr)
+  def roll(arr)
     arr.sample
   end
 

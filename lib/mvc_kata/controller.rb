@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-require 'dice'
 require 'mvc_kata/models'
 require 'mvc_kata/views'
 
@@ -19,7 +18,6 @@ class Battle
   attr_reader :player, :enemy, :turn_count
   def initialize(view_class)
     @view = view_class.new(self)
-    @enemy_classes = [Slime, Dragon]
     @player = Player.new([@view])
     @turn_count = 0
   end
@@ -47,7 +45,8 @@ class Battle
   end
 
   def encounter
-    @enemy = Dice.shuffle(@enemy_classes).new([@view])
+    enemy_klass = Enemy.encounter
+    @enemy = enemy_klass.new([@view])
     @view.encounter
 
     wait

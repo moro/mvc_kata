@@ -40,6 +40,20 @@ end
 
 class Enemy < Living
   attr :exp, true
+
+  class << self
+    def inherited(child)
+      children << child
+    end
+
+    def encounter
+      Dice.roll(children)
+    end
+
+    def children
+      @children ||= []
+    end
+  end
 end
 
 class Slime < Enemy
