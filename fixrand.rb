@@ -1,6 +1,5 @@
-Kernel.module_eval do
-  alias __rand__ rand
-  def rand(v)
-    (v < 1) ? __rand__(v) : 1
-  end
+require 'dice'
+module Dice
+  def [](num) ; 2 ; end
+  def shuffle(arr); arr.last ; end
 end

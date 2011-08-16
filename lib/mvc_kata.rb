@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+require 'dice'
 
 class Living
   attr :hp, true
@@ -87,7 +88,7 @@ class Battle
   end
 
   def enemy_attack
-    damage_point = rand(@enemy.attack_power) + 1
+    damage_point = Dice[@enemy.attack_power]
 
     puts
     puts "==========================="
@@ -101,7 +102,7 @@ class Battle
   end
 
   def player_attack
-    damage_point = rand(@player.attack_power) + 1
+    damage_point = Dice[@player.attack_power]
 
     puts
     puts "==========================="
@@ -115,7 +116,7 @@ class Battle
   end
 
   def player_hoimi
-    cure_point = rand(8) + 1
+    cure_point = Dice[8]
 
     puts
     puts "==========================="
@@ -149,7 +150,7 @@ class Battle
   end
 
   def encounter
-    @enemy = @enemy_classes[rand(@enemy_classes.size)].new
+    @enemy = Dice.shuffle(@enemy_classes).new
 
     puts "==========================="
     puts "#{@enemy.name}があらわれた"
@@ -211,7 +212,7 @@ class BattleEnglish
   end
 
   def enemy_attack
-    damage_point = rand(@enemy.attack_power) + 1
+    damage_point = Dice[@enemy.attack_power]
 
     puts
     puts "==========================="
@@ -225,7 +226,7 @@ class BattleEnglish
   end
 
   def player_attack
-    damage_point = rand(@player.attack_power) + 1
+    damage_point = Dice[@player.attack_power]
 
     puts
     puts "==========================="
@@ -239,7 +240,7 @@ class BattleEnglish
   end
 
   def player_hoimi
-    cure_point = rand(8) + 1
+    cure_point = Dice[8]
 
     puts
     puts "==========================="
@@ -273,7 +274,7 @@ class BattleEnglish
   end
 
   def encounter
-    @enemy = @enemy_classes.sample.new
+    @enemy = Dice.shuffle(@enemy_classes).new
 
     puts "==========================="
     puts "#{@player.name} encountered a #{@enemy.name}."
