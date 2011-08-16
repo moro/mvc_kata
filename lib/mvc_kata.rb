@@ -148,59 +148,24 @@ class Battle
     @turn_count = 0
   end
 
-  def finish_battle
-    @view_context.finish_battle(@turn_count)
-    gets
-  end
+  def mainloop
+    while (@player.living? && @enemy.living?) do
+      @turn_count += 1
 
-  def check_enemy_hp
-    @enemy.living? ?  enemy_attack : finish_battle
-  end
+      @view_context.query_command
 
-  def game_over
-    @view_context.game_over
-    gets
-  end
+      case command = wait
+      when "ホイミ", "2"
+        @view_context.player_hoimi(player.cure(8))
+      else
+        @view_context.attacked(@player, @enemy, @player.attack(@enemy))
+      end
+      wait
 
-  def check_player_hp
-    @player.living? ? query_command : game_over
-  end
-
-  def __attack__(attacker, victim)
-    @view_context.attacked(attacker, victim, attacker.attack(victim))
-  end
-
-  def enemy_attack
-    __attack__(@enemy, @player)
-
-    gets
-    check_player_hp()
-  end
-
-  def player_attack
-    __attack__(@player, @enemy)
-
-    gets
-    check_enemy_hp()
-  end
-
-  def player_hoimi
-    @view_context.player_hoimi(player.cure(8))
-
-    gets
-    enemy_attack()
-  end
-
-  def query_command
-    @turn_count += 1
-
-    @view_context.query_command
-
-    case command = gets.chomp
-    when "ホイミ", "2"
-      player_hoimi()
-    else
-      player_attack()
+      if enemy.living?
+        @view_context.attacked(@enemy, @player, @enemy.attack(@player))
+        wait
+      end
     end
   end
 
@@ -208,12 +173,21 @@ class Battle
     @enemy = Dice.shuffle(@enemy_classes).new
     @view_context.encounter
 
-    gets
-    query_command()
+    wait
+    mainloop
+
+    @player.living? ?  @view_context.finish_battle : @view_context.game_over
+    wait
   end
 
   def start
     encounter()
+  end
+
+  private
+
+  def wait
+    $stdin.gets.strip
   end
 end
 
