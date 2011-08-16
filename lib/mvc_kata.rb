@@ -149,7 +149,7 @@ class Battle
   end
 
   def encounter
-    @enemy = @enemy_classes.sample.new
+    @enemy = @enemy_classes[rand(@enemy_classes.size)].new
 
     puts "==========================="
     puts "#{@enemy.name}があらわれた"
