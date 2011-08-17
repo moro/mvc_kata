@@ -17,8 +17,8 @@ module MvcKata
 
     def attack(other)
       Dice[attack_power].tap do |damage_point|
+        other.damaged(damage_point)
         notify(:attacked, [self, other, damage_point])
-        other.damaged(val)
       end
     end
 
