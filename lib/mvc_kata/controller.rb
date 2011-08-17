@@ -35,11 +35,8 @@ module MvcKata
         else @player.attack(@enemy)
         end
 
-        wait
-
         if @enemy.living?
           @enemy.attack(@player)
-          wait
         end
       end
     end
@@ -48,10 +45,7 @@ module MvcKata
       @enemy = append_observer(Enemy.encounter.new)
       @view.encounter
 
-      wait
       mainloop
-
-      wait
     end
 
     def start
@@ -59,10 +53,6 @@ module MvcKata
     end
 
     private
-
-    def wait
-      @view.wait
-    end
 
     def append_observer(living)
       living.tap {|l| l.add_observer(@view) }

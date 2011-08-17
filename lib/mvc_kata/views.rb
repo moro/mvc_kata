@@ -28,8 +28,9 @@ module MvcKata
         is_enemy ? finish_battle : game_over
       end
 
-      def render(output)
+      def render(output, prompt = false)
         puts unindent(output)
+        wait unless prompt
       end
 
       def wait
@@ -49,7 +50,7 @@ module MvcKata
       end
 
       def query_command
-        render(<<-VIEW)
+        render(<<-VIEW, true)
           ===========================
           #{player.name}のHP: #{player.hp}
            1 たたかう"
@@ -109,7 +110,7 @@ module MvcKata
       end
 
       def query_command
-        render(<<-VIEW)
+        render(<<-VIEW, true)
 
           ===========================
           #{player.name} HP: #{player.hp}
