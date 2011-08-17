@@ -1,7 +1,7 @@
 # coding: utf-8
 module MvcKata
   class Living
-    attr :hp, false
+    attr :hp, true
     attr :max_hp, true
     attr :name, true
     attr :attack_power, true
@@ -16,16 +16,14 @@ module MvcKata
     end
 
     def attack(other)
-      old_hp = other.hp
-      damage_point = Dice[attack_power]
-      other.hp -= damage_point
-      (old_hp - other.hp).tap do |damage|
-        notify(:attacked, [self, other, damage])
+      Dice[attack_power].tap do |damage_point|
+        notify(:attacked, [self, other, damage_point])
+        other.damaged(val)
       end
     end
 
-    def hp=(val)
-      @hp = [val, 0].max
+    def damaged(val)
+      @hp = [hp - val, 0].max
     end
 
     def living?

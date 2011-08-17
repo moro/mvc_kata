@@ -33,7 +33,7 @@ describe Living do
   describe '#living?' do
     subject { slime }
     before do
-      slime.hp = 0
+      slime.damaged(slime.max_hp)
     end
     it { should_not be_living }
   end
