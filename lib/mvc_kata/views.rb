@@ -1,5 +1,6 @@
 # coding: utf-8
 require 'forwardable'
+require 'mvc_kata/observer'
 
 module MvcKata
   module View
@@ -12,16 +13,12 @@ module MvcKata
     class Base
       extend Forwardable
       include View
+      include MvcKata::Observer
 
       def_delegators '@battle', :player, :enemy
 
       def initialize(battle)
         @battle = battle
-      end
-
-      def update(method, *values)
-        return false unless respond_to?(method)
-        send(method, *values)
       end
 
       def dead(is_enemy)

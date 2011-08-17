@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'mvc_kata/models'
 require 'mvc_kata/views'
+require 'mvc_kata/observer'
 
 module MvcKata
   class Runner
@@ -15,6 +16,8 @@ module MvcKata
   end
 
   class Battle
+    include MvcKata::Observer
+
     attr_reader :player, :enemy, :turn_count
     def initialize(view_class)
       @view = view_class.new(self)
@@ -29,15 +32,13 @@ module MvcKata
     end
 
     def mainloop
-      while (@player.living? && @enemy.living?) do
+      loop do
         case command
         when :hoimi then @player.cure(8)
         else @player.attack(@enemy)
         end
 
-        if @enemy.living?
-          @enemy.attack(@player)
-        end
+        @enemy.attack(@player)
       end
     end
 
@@ -45,17 +46,24 @@ module MvcKata
       @enemy = append_observer(Enemy.encounter.new)
       @view.encounter
 
-      mainloop
+      catch(:dead){ mainloop }
     end
 
     def start
       encounter()
     end
 
+    def dead(ignore)
+      throw :dead
+    end
+
     private
 
     def append_observer(living)
-      living.tap {|l| l.add_observer(@view) }
+      living.tap do |l|
+        l.add_observer(@view)
+        l.add_observer(self)
+      end
     end
   end
 end
