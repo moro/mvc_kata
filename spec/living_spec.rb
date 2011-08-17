@@ -20,9 +20,10 @@ describe Living do
 
   describe '#attack(other) w/observer' do
     let(:observer) { observer = double('observer') }
-    let(:player) { Player.new([observer]) }
+    let(:player) { Player.new }
 
     before do
+      player.add_observer(observer)
       observer.should_receive(:update).with(:attacked, player, slime, 3) { true }
     end
 

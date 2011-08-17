@@ -6,9 +6,13 @@ module MvcKata
     attr :name, true
     attr :attack_power, true
 
-    def initialize(observers = [])
-      @observers = observers
+    def initialize
+      @observers = []
       init_parameter
+    end
+
+    def add_observer(observer)
+      @observers << observer
     end
 
     def attack(other)
@@ -26,6 +30,10 @@ module MvcKata
 
     def living?
       hp > 0
+    end
+
+    def enemy?
+      true
     end
 
     private
@@ -88,6 +96,8 @@ module MvcKata
         notify(:player_hoimi, cure_point)
       end
     end
+
+    def enemy?; false end
 
     private
 

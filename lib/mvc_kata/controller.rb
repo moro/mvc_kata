@@ -18,7 +18,7 @@ module MvcKata
     attr_reader :player, :enemy, :turn_count
     def initialize(view_class)
       @view = view_class.new(self)
-      @player = Player.new([@view])
+      @player = append_observer(Player.new)
       @turn_count = 0
     end
 
@@ -45,8 +45,7 @@ module MvcKata
     end
 
     def encounter
-      enemy_klass = Enemy.encounter
-      @enemy = enemy_klass.new([@view])
+      @enemy = append_observer(Enemy.encounter.new)
       @view.encounter
 
       wait
@@ -64,6 +63,10 @@ module MvcKata
 
     def wait
       @view.wait
+    end
+
+    def append_observer(living)
+      living.tap {|l| l.add_observer(@view) }
     end
   end
 end
