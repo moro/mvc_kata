@@ -27,7 +27,8 @@ end
 RUBY
 end
 
-Given "起動する" do
-  Given  %Q{`ruby -I../../lib -r./stub_dice.rb ../../bin/mvc_kata`を対話的に実行する}
+Given /^(英語モードで)?起動する$/ do |english|
+  opt = !!english ? ' english' : ''
+  Given  %Q{`ruby -I../../lib -r./stub_dice.rb ../../bin/mvc_kata#{opt}`を対話的に実行する}
 end
 
