@@ -33,12 +33,8 @@ module MvcKata
 
     def mainloop
       loop do
-        case command
-        when :hoimi then @player.cure(8)
-        else @player.attack(@enemy)
-        end
-
-        @enemy.attack(@player)
+        @player.action(command, @enemy).execute
+        @enemy.action(nil, @player).execute
       end
     end
 

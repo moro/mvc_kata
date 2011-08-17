@@ -1,4 +1,5 @@
 # coding: utf-8
+require 'mvc_kata/commands'
 module MvcKata
   class Living
     attr :hp, true
@@ -13,6 +14,10 @@ module MvcKata
 
     def add_observer(observer)
       @observers << observer
+    end
+
+    def action(context, target)
+      Command::Attack.new(self, target)
     end
 
     def attack(other)
@@ -89,6 +94,12 @@ module MvcKata
   end
 
   class Player < Living
+    Hoimi = Command::Cure(8)
+
+    def action(context, target)
+      (context == :hoimi) ? Hoimi.new(self, self) : super
+    end
+
     def cure(power)
       Dice[power].tap do |cure_point|
         self.hp = [self.hp + cure_point, self.max_hp].min
