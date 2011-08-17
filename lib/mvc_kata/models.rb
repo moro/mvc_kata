@@ -19,6 +19,7 @@ module MvcKata
       Dice[attack_power].tap do |damage_point|
         other.damaged(damage_point)
         notify(:attacked, [self, other, damage_point])
+        notify(:dead, other.enemy?) unless other.living?
       end
     end
 

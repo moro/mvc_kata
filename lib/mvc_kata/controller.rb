@@ -51,7 +51,6 @@ module MvcKata
       wait
       mainloop
 
-      @player.living? ?  @view.finish_battle : @view.game_over
       wait
     end
 

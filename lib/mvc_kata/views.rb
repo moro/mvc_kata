@@ -24,6 +24,10 @@ module MvcKata
         send(method, *values)
       end
 
+      def dead(is_enemy)
+        is_enemy ? finish_battle : game_over
+      end
+
       def render(output)
         puts unindent(output)
       end
